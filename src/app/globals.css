@@ -1,0 +1,162 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-surface-container-low: #f1f4fa;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container: #ebeef5;
+  --color-surface-container-high: #e5e8ef;
+  --color-surface-container-highest: #e0e2e9;
+  --color-surface: #f7f9ff;
+  --color-surface-bright: #f7f9ff;
+  --color-surface-dim: #d7dae1;
+  --color-on-surface: #181c21;
+  --color-on-surface-variant: #424753;
+  --color-inverse-surface: #2d3136;
+  --color-inverse-on-surface: #eef1f8;
+  --color-outline: #727785;
+  --color-outline-variant: #c2c6d6;
+  --color-primary: #0051ae;
+  --color-primary-container: #0969da;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #ecefff;
+  --color-on-primary-fixed: #001a41;
+  --color-on-primary-fixed-variant: #004493;
+  --color-primary-fixed: #d8e2ff;
+  --color-primary-fixed-dim: #adc6ff;
+  --color-secondary: #5c5f61;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #e0e3e5;
+  --color-on-secondary-container: #626567;
+  --color-secondary-fixed: #e0e3e5;
+  --color-secondary-fixed-dim: #c4c7c9;
+  --color-tertiary: #913900;
+  --color-tertiary-container: #b84b00;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #ffece5;
+  --color-tertiary-fixed: #ffdbcc;
+  --color-tertiary-fixed-dim: #ffb693;
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #93000a;
+  --color-background: #f7f9ff;
+  --color-on-background: #181c21;
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'Courier Prime', Courier, monospace;
+}
+
+:root {
+  --background: #f7f9ff;
+  --foreground: #181c21;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0d1117;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* Material Symbols configuration */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  vertical-align: middle;
+}
+.material-symbols-outlined.fill {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Custom scrollbar for webkit */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent; 
+}
+::-webkit-scrollbar-thumb {
+  background: #d0d7de; 
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a3b0be; 
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #30363d;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #484f58;
+}
+
+/* Upload zone & button utilities */
+.custom-upload-zone {
+  transition: all 0.2s ease;
+}
+.custom-upload-zone:hover {
+  border-color: #0969da;
+  background-color: #f7f9ff;
+}
+.custom-upload-zone.dragover {
+  border-color: #0969da;
+  background-color: #eef1f8;
+  outline: 2px solid #0969da;
+  outline-offset: 2px;
+}
+.dark .custom-upload-zone:hover {
+  border-color: #adc6ff;
+  background-color: #161b22;
+}
+.dark .custom-upload-zone.dragover {
+  border-color: #adc6ff;
+  background-color: #21262d;
+  outline: 2px solid #adc6ff;
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  background-color: #0051ae;
+  color: #ffffff;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.btn-primary:hover {
+  background-color: #004493;
+}
+.dark .btn-primary {
+  background-color: #0969da;
+}
+.dark .btn-primary:hover {
+  background-color: #1f883d;
+}
+
+.btn-secondary {
+  background-color: #ffffff;
+  color: #181c21;
+  border: 1px solid #c2c6d6;
+}
+.btn-secondary:hover {
+  background-color: #f1f4fa;
+}
+.dark .btn-secondary {
+  background-color: #21262d;
+  color: #f0f6fc;
+  border-color: #30363d;
+}
+.dark .btn-secondary:hover {
+  background-color: #30363d;
+}
+
+/* react-pdf custom canvas styling */
+.react-pdf__Page__canvas {
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
