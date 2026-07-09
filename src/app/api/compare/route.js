@@ -1,5 +1,4 @@
-import OpenAI from "openai";
-import { GoogleGenAI } from "@google/genai";
+import Groq from "groq-sdk";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
@@ -9,13 +8,10 @@ export async function POST(req) {
       return NextResponse.json({ error: "No job description provided" }, { status: 400 });
     }
 
-    const rawKey = process.env.GROQ_API_KEY || process.env.GEMINI_API_KEY || process.env.CHATGPT_API_KEY || process.env.OPENAI_API_KEY;
-    if (!rawKey) {
-      return NextResponse.json({ error: "No API key configured in .env.local." }, { status: 503 });
+    const apiKey = process.env.GROQ_API_KEY || process.env.API_KEY;
+    if (!apiKey) {
+      return NextResponse.json({ error: "No Groq API key configured in .env.local (GROQ_API_KEY)." }, { status: 503 });
     }
-
-    const isGroqKey = rawKey.startsWith("gsk_") || process.env.GROQ_API_KEY;
-    const isGeminiKey = !isGroqKey && (rawKey.startsWith("AIza") || process.env.GEMINI_API_KEY || (!rawKey.startsWith("sk-") && !rawKey.includes("sk-")));
 
     const prompt = `You are an experienced technical recruiter.
 Compare this candidate's resume against the target job description. Evaluate how well their skills and background match what the employer is looking for in a conversational, human tone.
@@ -33,28 +29,9 @@ Return ONLY valid JSON matching this exact structure:
   "matched": array of strings (top 4-8 key skills or qualifications present in both)
 }`;
 
-    if (isGeminiKey) {
-      const ai = new GoogleGenAI({ apiKey: rawKey });
-      const response = await ai.models.generateContent({
-        model: "gemini-2.0-flash",
-        contents: prompt,
-        config: {
-          responseMimeType: "application/json",
-          temperature: 0.2,
-          maxOutputTokens: 2048,
-        },
-      });
-      const matchData = JSON.parse(response.text);
-      return NextResponse.json(matchData, { status: 200 });
-    }
-
-    // Unify Groq (`gsk_`) and OpenAI (`sk-`) using the standard OpenAI client
-    const openai = new OpenAI({
-      apiKey: rawKey,
-      baseURL: isGroqKey ? "https://api.groq.com/openai/v1" : undefined,
-    });
-    const response = await openai.chat.completions.create({
-      model: isGroqKey ? "llama-3.3-70b-versatile" : "gpt-4o-mini",
+    const groq = new Groq({ apiKey });
+    const response = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
       messages: [
         { role: "system", content: "You are an experienced technical recruiter that always responds with valid JSON." },
         { role: "user", content: prompt }
@@ -63,12 +40,13 @@ Return ONLY valid JSON matching this exact structure:
       temperature: 0.2,
       max_tokens: 2048,
     });
+
     const matchData = JSON.parse(response.choices[0].message.content);
     return NextResponse.json(matchData, { status: 200 });
   } catch (error) {
     console.error("Job comparison failed:", error);
     return NextResponse.json(
-      { error: error.message || "Failed to compare job match." },
+      { error: error.message || "Failed to compare job match via Groq API." },
       { status: 500 }
     );
   }

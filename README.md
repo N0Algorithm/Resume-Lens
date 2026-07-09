@@ -1,11 +1,10 @@
 # Resume-Lens
 
-Resume-Lens is an AI-powered resume analysis tool built to give you the clinical, actionable feedback of a senior tech recruiter right inside your browser. Powered primarily by ultra-fast **GroqCloud (`llama-3.3-70b-versatile`)**, it grades your resume on impact metrics, keywords, formatting, and overall readability. You can upload any PDF resume and instantly view tailored feedback side-by-side with your document.
+Resume-Lens is an AI-powered resume analysis tool built to give you the clinical, actionable feedback of a senior tech recruiter right inside your browser. Powered natively by ultra-fast **GroqCloud (`llama-3.3-70b-versatile`)**, it grades your resume on impact metrics, keywords, formatting, and overall readability. You can upload any PDF resume and instantly view tailored feedback side-by-side with your document.
 
 ## Features
 
-* **Lightning-Fast AI Feedback via Groq:** Get an exhaustive, multi-pillar breakdown of your resume powered by **Llama 3.3 70B** on Groq's high-speed inference engine (300+ tokens/sec).
-* **Multi-Provider Auto-Detection:** Built with a seamless triple-fallback backend that automatically recognizes keys from **GroqCloud (`gsk_...`)**, **OpenAI (`sk-...`)**, and **Google Gemini (`AIza...`)**.
+* **Lightning-Fast AI Feedback via Groq:** Get an exhaustive, multi-pillar breakdown of your resume powered natively by **Llama 3.3 70B** using the official `groq-sdk` (300+ tokens/sec).
 * **Side-by-Side Studio View:** Read specific recruiter recommendations while inspecting the exact layout and structure of your PDF.
 * **ATS Compatibility Check:** Verify that Applicant Tracking Systems can easily parse your document headers, fonts, and layout.
 * **Job Description Matching:** Paste a target job description to dynamically check keyword overlap and identify critical missing skills.
@@ -15,8 +14,7 @@ Resume-Lens is an AI-powered resume analysis tool built to give you the clinical
 
 * **Framework:** [Next.js](https://nextjs.org/) 16 (App Router)
 * **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
-* **Flagship AI Engine:** [GroqCloud API](https://console.groq.com/) (`llama-3.3-70b-versatile`) via OpenAI SDK
-* **Supported Fallback Providers:** [OpenAI ChatGPT](https://platform.openai.com/) (`gpt-4o-mini`), [Google Gemini API](https://ai.google.dev/) (`gemini-2.0-flash`)
+* **Flagship AI Engine & SDK:** [GroqCloud API](https://console.groq.com/) via official [`groq-sdk`](https://github.com/groq/groq-typescript) (`llama-3.3-70b-versatile`)
 * **PDF Handling:** [react-pdf](https://projects.wojtekmaj.pl/react-pdf/)
 
 ## Project Structure
@@ -42,20 +40,15 @@ Resume-Lens is an AI-powered resume analysis tool built to give you the clinical
 
 ## Environment Variables
 
-To enable live AI analysis, configure your API key inside `.env.local`. **GroqCloud (`gsk_...`)** is recommended for the fastest inference speed.
+To enable live AI analysis, configure your **Groq API key** inside `.env.local`.
 
 1. Create your `.env.local` file in the root directory:
    ```bash
    touch .env.local
    ```
-2. Add your **Groq API key** (or any supported provider key):
+2. Add your **Groq API key**:
    ```env
-   # Recommended Flagship Provider: GroqCloud (Llama 3.3 70B)
    GROQ_API_KEY=gsk_your_groqcloud_api_key_here
-
-   # Or alternatively use an OpenAI key (sk-...) or Google Gemini key (AIza...)
-   # OPENAI_API_KEY=sk_your_openai_api_key_here
-   # GEMINI_API_KEY=your_gemini_api_key_here
    ```
 
 *(Note: If no API key is configured or offline, the application gracefully falls back to displaying a realistic sample report for demonstration and testing purposes.)*
@@ -92,12 +85,12 @@ Deploy effortlessly to [Vercel](https://vercel.com/):
 
 1. Push your repository to GitHub.
 2. Import the project into your Vercel dashboard.
-3. Add your `GROQ_API_KEY` (or chosen provider key) under **Project Settings > Environment Variables**.
+3. Add your `GROQ_API_KEY` under **Project Settings > Environment Variables**.
 4. Deploy!
 
 ## Security Notes
 
-* Only the *extracted plain text* from your PDF is transmitted to the AI API; your original PDF binary remains securely in your browser session.
+* Only the *extracted plain text* from your PDF is transmitted to the Groq API; your original PDF binary remains securely in your browser session.
 * Keep your API keys confidential (`.env.local` is listed in `.gitignore`). API requests are handled server-side (`/api/analyze` and `/api/compare`) to prevent leaking your secret keys to client-side browsers.
 
 ## License
