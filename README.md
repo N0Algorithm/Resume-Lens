@@ -1,35 +1,37 @@
 # Resume-Lens
 
-Resume-Lens is an AI-powered resume analysis tool built to give you the feedback of a senior tech recruiter, right in your browser. It uses a custom-prompted Gemini model to grade your resume on impact, keywords, formatting, and overall readability. You can upload any PDF resume and instantly see actionable feedback side-by-side with your document.
+Resume-Lens is an AI-powered resume analysis tool built to give you the clinical, actionable feedback of a senior tech recruiter right inside your browser. Powered primarily by ultra-fast **GroqCloud (`llama-3.3-70b-versatile`)**, it grades your resume on impact metrics, keywords, formatting, and overall readability. You can upload any PDF resume and instantly view tailored feedback side-by-side with your document.
 
 ## Features
 
-* **Instant AI Feedback:** Get a comprehensive breakdown of your resume using Gemini 2.5 Flash.
-* **Side-by-Side Studio View:** Read your feedback while viewing the exact section of the PDF it references.
-* **ATS Compatibility Check:** See how easily Applicant Tracking Systems can parse your document.
-* **Job Description Matching:** Compare your current skills against a specific job description.
-* **Local Processing:** PDF text extraction happens entirely in your browser using `react-pdf`, saving bandwidth and protecting raw file privacy (only the extracted text is sent to the API).
+* **Lightning-Fast AI Feedback via Groq:** Get an exhaustive, multi-pillar breakdown of your resume powered by **Llama 3.3 70B** on Groq's high-speed inference engine (300+ tokens/sec).
+* **Multi-Provider Auto-Detection:** Built with a seamless triple-fallback backend that automatically recognizes keys from **GroqCloud (`gsk_...`)**, **OpenAI (`sk-...`)**, and **Google Gemini (`AIza...`)**.
+* **Side-by-Side Studio View:** Read specific recruiter recommendations while inspecting the exact layout and structure of your PDF.
+* **ATS Compatibility Check:** Verify that Applicant Tracking Systems can easily parse your document headers, fonts, and layout.
+* **Job Description Matching:** Paste a target job description to dynamically check keyword overlap and identify critical missing skills.
+* **Local & Private PDF Processing:** Text extraction happens entirely inside your browser via `react-pdf`, saving bandwidth and ensuring your raw binary PDF file never leaves your machine.
 
 ## Tech Stack
 
-* **Framework:** [Next.js](https://nextjs.org/) (App Router)
+* **Framework:** [Next.js](https://nextjs.org/) 16 (App Router)
 * **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
-* **AI Provider:** [Google Gemini API](https://ai.google.dev/) (`@google/genai`)
+* **Flagship AI Engine:** [GroqCloud API](https://console.groq.com/) (`llama-3.3-70b-versatile`) via OpenAI SDK
+* **Supported Fallback Providers:** [OpenAI ChatGPT](https://platform.openai.com/) (`gpt-4o-mini`), [Google Gemini API](https://ai.google.dev/) (`gemini-2.0-flash`)
 * **PDF Handling:** [react-pdf](https://projects.wojtekmaj.pl/react-pdf/)
 
 ## Project Structure
 
-* `/src/app` - Contains the main Next.js routes and the API endpoint (`/api/analyze/route.js`).
-* `/src/components` - Houses all UI components, organized by domain (upload, analysis, layout).
-* `/src/lib` - Core logic, including the `ResumeContext` that manages application state.
-* `/src/constants` - Static configuration and fallback sample reports.
+* `/src/app` - Contains the main Next.js routes and server-side API endpoints (`/api/analyze/route.js` & `/api/compare/route.js`).
+* `/src/components` - Domain-organized UI components (`upload`, `analysis`, `layout`, and `ui`).
+* `/src/lib` - Application state management via `ResumeContext`.
+* `/src/constants` - Static configuration, scoring criteria, and sample fallback reports.
 
 ## Installation
 
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/Resume-Lens.git
+   git clone https://github.com/N0Algorithm/Resume-Lens.git
    cd Resume-Lens
    ```
 2. **Install dependencies:**
@@ -40,18 +42,23 @@ Resume-Lens is an AI-powered resume analysis tool built to give you the feedback
 
 ## Environment Variables
 
-To enable the live AI analysis, you need a Google Gemini API key.
+To enable live AI analysis, configure your API key inside `.env.local`. **GroqCloud (`gsk_...`)** is recommended for the fastest inference speed.
 
-1. Copy the example environment file or create a new one:
+1. Create your `.env.local` file in the root directory:
    ```bash
-   cp .env.example .env.local
+   touch .env.local
    ```
-2. Add your API key to `.env.local`:
+2. Add your **Groq API key** (or any supported provider key):
    ```env
-   GEMINI_API_KEY=your_gemini_api_key_here
+   # Recommended Flagship Provider: GroqCloud (Llama 3.3 70B)
+   GROQ_API_KEY=gsk_your_groqcloud_api_key_here
+
+   # Or alternatively use an OpenAI key (sk-...) or Google Gemini key (AIza...)
+   # OPENAI_API_KEY=sk_your_openai_api_key_here
+   # GEMINI_API_KEY=your_gemini_api_key_here
    ```
 
-*(Note: If no API key is provided, the app will gracefully fall back to displaying a sample report for demonstration purposes.)*
+*(Note: If no API key is configured or offline, the application gracefully falls back to displaying a realistic sample report for demonstration and testing purposes.)*
 
 ## Running the Project
 
@@ -63,48 +70,36 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Build
+## Build for Production
 
-To create an optimized production build:
+To verify or create an optimized production build:
 
 ```bash
 npm run build
 npm start
 ```
 
-## Usage
+## Usage Workflow
 
-1. **Upload:** Drag and drop your PDF resume onto the upload screen.
-2. **Review:** Wait a few seconds for the text extraction and Gemini API analysis to complete.
-3. **Iterate:** Read through the recommendations. The "Bullet Rewrite" section will specifically target a weak bullet point and suggest a stronger, impact-driven alternative.
-4. **Compare (Optional):** Scroll down to the Job Match section and paste a job description to see how well your resume aligns.
+1. **Upload:** Drag and drop your PDF resume onto the clean drop zone.
+2. **Analyze:** Watch the multi-stage progress indicator as text is extracted and analyzed by **Groq (`llama-3.3-70b`)**.
+3. **Review & Iterate:** Explore your overall score, word choices, ATS health, and clinical bullet rewrites.
+4. **Compare:** Paste a target job description in the Job Match panel to see how well your background aligns.
 
 ## Deployment
 
-The easiest way to deploy this Next.js application is with [Vercel](https://vercel.com/):
+Deploy effortlessly to [Vercel](https://vercel.com/):
 
-1. Push your code to GitHub.
-2. Import the project into Vercel.
-3. Add your `GEMINI_API_KEY` in the Vercel Environment Variables settings.
-4. Deploy.
+1. Push your repository to GitHub.
+2. Import the project into your Vercel dashboard.
+3. Add your `GROQ_API_KEY` (or chosen provider key) under **Project Settings > Environment Variables**.
+4. Deploy!
 
 ## Security Notes
 
-* Only the *extracted text* from the PDF is sent to the Gemini API. The actual PDF file never leaves your browser.
-* Ensure your `GEMINI_API_KEY` is kept secret and never committed to version control. It is securely accessed only via the server-side API route (`/api/analyze`).
+* Only the *extracted plain text* from your PDF is transmitted to the AI API; your original PDF binary remains securely in your browser session.
+* Keep your API keys confidential (`.env.local` is listed in `.gitignore`). API requests are handled server-side (`/api/analyze` and `/api/compare`) to prevent leaking your secret keys to client-side browsers.
 
-## Future Improvements
+## License
 
-* Support for `.docx` files.
-* Export the final report to PDF.
-* Save past resume revisions and compare improvements over time.
-
-## Contributing
-
-Contributions are welcome! If you'd like to improve Resume-Lens, please:
-
-1. Fork the repository.
-2. Create a feature branch (`git checkout -b feature/amazing-feature`).
-3. Commit your changes (`git commit -m 'Add amazing feature'`).
-4. Push to the branch (`git push origin feature/amazing-feature`).
-5. Open a Pull Request
+This project is open-source and available for developer educational and career improvement purposes.

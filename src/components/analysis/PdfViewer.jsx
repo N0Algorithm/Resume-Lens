@@ -32,7 +32,7 @@ export default function PdfViewer() {
     setNumPages(pdf.numPages);
     setHasError(false);
 
-    // Automatically extract text from all pages for Gemini AI analysis
+    // Automatically extract text from all pages for AI analysis
     try {
       let fullText = "";
       for (let i = 1; i <= pdf.numPages; i++) {
