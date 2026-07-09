@@ -27,7 +27,7 @@ const PdfViewer = dynamic(() => import("../components/analysis/PdfViewer"), {
 });
 
 export default function Home() {
-  const { view, isGeminiAnalyzing } = useResume();
+  const { view, isAnalyzing } = useResume();
 
   if (view === "upload") {
     return <UploadWorkspace />;
@@ -43,7 +43,7 @@ export default function Home() {
 
       {/* Right Panel: Structured Report (52% width, 100% height, independent scroll) */}
       <div className="w-full md:w-[52%] h-full overflow-y-auto p-6 flex flex-col gap-6 custom-scrollbar bg-white dark:bg-[#161b22]/40">
-        {isGeminiAnalyzing ? (
+        {isAnalyzing ? (
           <div className="max-w-[720px] mx-auto w-full h-full flex flex-col items-center justify-center min-h-[460px] gap-6 animate-fadeIn my-auto">
             <div className="w-14 h-14 rounded-full bg-[#f1f4fa] dark:bg-[#21262d] border border-[#c2c6d6] dark:border-[#30363d] flex items-center justify-center shadow-sm">
               <span className="material-symbols-outlined text-[28px] text-[#0051ae] dark:text-[#adc6ff] animate-pulse">

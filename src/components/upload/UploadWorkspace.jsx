@@ -20,30 +20,26 @@ export default function UploadWorkspace() {
     setIsDragOver(false);
   };
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragOver(false);
-
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const file = e.dataTransfer.files[0];
-      if (file.type === "application/pdf" || file.name.endsWith(".pdf")) {
+  const validateAndUploadFile = (fileList) => {
+    if (fileList && fileList.length > 0) {
+      const file = fileList[0];
+      if (file.type === "application/pdf" || file.name?.toLowerCase().endsWith(".pdf")) {
         startUpload(file);
       } else {
-        alert("Please upload a PDF file.");
+        alert("Please upload a valid PDF document.");
       }
     }
   };
 
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+    validateAndUploadFile(e.dataTransfer.files);
+  };
+
   const handleFileChange = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      if (file.type === "application/pdf" || file.name.endsWith(".pdf")) {
-        startUpload(file);
-      } else {
-        alert("Please upload a PDF file.");
-      }
-    }
+    validateAndUploadFile(e.target.files);
   };
 
   const triggerBrowse = () => {

@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
@@ -8,12 +9,14 @@ export async function POST(req) {
       return NextResponse.json({ error: "No resume text provided." }, { status: 400 });
     }
 
-    const apiKey = process.env.CHATGPT_API_KEY || process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json({ error: "ChatGPT API key is not configured." }, { status: 503 });
+    const rawKey = process.env.GROQ_API_KEY || process.env.GEMINI_API_KEY || process.env.CHATGPT_API_KEY || process.env.OPENAI_API_KEY;
+    if (!rawKey) {
+      return NextResponse.json({ error: "No API key configured in .env.local." }, { status: 503 });
     }
 
-    const openai = new OpenAI({ apiKey });
+    // Determine key type: Groq (gsk_), Gemini (AIza), or OpenAI (sk-)
+    const isGroqKey = rawKey.startsWith("gsk_") || process.env.GROQ_API_KEY;
+    const isGeminiKey = !isGroqKey && (rawKey.startsWith("AIza") || process.env.GEMINI_API_KEY || (!rawKey.startsWith("sk-") && !rawKey.includes("sk-")));
 
     // We ask the model to review the resume like a friendly, experienced tech recruiter.
     const prompt = `You are an experienced, supportive technical recruiter and career mentor.
@@ -56,8 +59,28 @@ Return ONLY valid JSON matching this exact structure:
   }
 }`;
 
+    if (isGeminiKey) {
+      const ai = new GoogleGenAI({ apiKey: rawKey });
+      const response = await ai.models.generateContent({
+        model: "gemini-2.0-flash",
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json",
+          temperature: 0.2,
+          maxOutputTokens: 4096,
+        },
+      });
+      const reportData = JSON.parse(response.text);
+      return NextResponse.json(reportData, { status: 200 });
+    }
+
+    // Unify Groq (`gsk_`) and OpenAI (`sk-`) using the standard OpenAI client
+    const openai = new OpenAI({
+      apiKey: rawKey,
+      baseURL: isGroqKey ? "https://api.groq.com/openai/v1" : undefined,
+    });
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: isGroqKey ? "llama-3.3-70b-versatile" : "gpt-4o-mini",
       messages: [
         { role: "system", content: "You are an experienced technical recruiter and career mentor that always responds with valid JSON." },
         { role: "user", content: prompt }
@@ -66,7 +89,6 @@ Return ONLY valid JSON matching this exact structure:
       temperature: 0.2,
       max_tokens: 4096,
     });
-
     const reportData = JSON.parse(response.choices[0].message.content);
     return NextResponse.json(reportData, { status: 200 });
   } catch (error) {

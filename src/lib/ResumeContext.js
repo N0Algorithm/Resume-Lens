@@ -8,31 +8,32 @@ export const ResumeContext = createContext(null);
 export function ResumeContextProvider({ children }) {
   // 'upload' | 'analysis'
   const [view, setView] = useState("upload");
-  
+
   // File state
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState(null);
   const [resumeText, setResumeText] = useState("");
-  
+
   // Status state: 'idle' | 'uploading' | 'reading' | 'analyzing' | 'completed'
   const [status, setStatus] = useState("idle");
   const [statusText, setStatusText] = useState("");
-  
+
   // Report and analysis data
   const [report, setReport] = useState(null);
   const [jobMatch, setJobMatch] = useState(SAMPLE_REPORT.defaultJobMatch);
   const [isComparing, setIsComparing] = useState(false);
-  const [isGeminiAnalyzing, setIsGeminiAnalyzing] = useState(false);
-  const [geminiError, setGeminiError] = useState(null);
-  // When resumeText is extracted in analysis view, trigger live Gemini AI analysis!
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisError, setAnalysisError] = useState(null);
+
+  // When resumeText is extracted in analysis view, trigger live AI analysis
   useEffect(() => {
     if (!resumeText || view !== "analysis") return;
 
     let isMounted = true;
-    setIsGeminiAnalyzing(true);
-    setGeminiError(null);
+    setIsAnalyzing(true);
+    setAnalysisError(null);
 
-    async function fetchGeminiAnalysis() {
+    async function fetchAnalysisReport() {
       try {
         const res = await fetch("/api/analyze", {
           method: "POST",
@@ -44,39 +45,39 @@ export function ResumeContextProvider({ children }) {
           setReport((prev) => ({
             ...data,
             fileName: prev?.fileName || fileName || "resume.pdf",
-            isLiveGemini: true,
+            isLiveAnalysis: true,
           }));
           if (data.defaultJobMatch) {
             setJobMatch(data.defaultJobMatch);
           }
-          setIsGeminiAnalyzing(false);
+          setIsAnalyzing(false);
         } else if (isMounted) {
           const errData = await res.json().catch(() => ({}));
-          const errorMsg = errData.error || `Gemini API error (${res.status})`;
-          console.error("Gemini Analyze Error:", errorMsg);
-          setGeminiError(errorMsg);
+          const errorMsg = errData.error || `AI API error (${res.status})`;
+          console.error("AI Analyze Error:", errorMsg);
+          setAnalysisError(errorMsg);
           setReport((prev) => ({
             ...(prev || SAMPLE_REPORT),
             fileName: prev?.fileName || fileName || "resume.pdf",
-            isLiveGemini: false,
+            isLiveAnalysis: false,
           }));
-          setIsGeminiAnalyzing(false);
+          setIsAnalyzing(false);
         }
       } catch (err) {
         if (isMounted) {
-          console.error("Gemini Network Error:", err);
-          setGeminiError(err.message || "Network error calling Gemini API");
+          console.error("AI Network Error:", err);
+          setAnalysisError(err.message || "Network error calling AI API");
           setReport((prev) => ({
             ...(prev || SAMPLE_REPORT),
             fileName: prev?.fileName || fileName || "resume.pdf",
-            isLiveGemini: false,
+            isLiveAnalysis: false,
           }));
-          setIsGeminiAnalyzing(false);
+          setIsAnalyzing(false);
         }
       }
     }
 
-    fetchGeminiAnalysis();
+    fetchAnalysisReport();
     return () => {
       isMounted = false;
     };
@@ -86,7 +87,7 @@ export function ResumeContextProvider({ children }) {
     setStatus("uploading");
     setStatusText(UPLOAD_STEPS[0]);
     setResumeText("");
-    
+
     if (uploadedFile) {
       setFile(uploadedFile);
       setFileName(uploadedFile.name);
@@ -112,8 +113,8 @@ export function ResumeContextProvider({ children }) {
     const t3 = setTimeout(() => {
       setStatus("completed");
       setStatusText("");
-      setIsGeminiAnalyzing(true);
-      setGeminiError(null);
+      setIsAnalyzing(true);
+      setAnalysisError(null);
       setReport({
         ...SAMPLE_REPORT,
         fileName: uploadedFile ? uploadedFile.name : "sample-resume.pdf",
@@ -136,16 +137,16 @@ export function ResumeContextProvider({ children }) {
     setFile(null);
     setFileName(null);
     setResumeText("");
-    setIsGeminiAnalyzing(false);
-    setGeminiError(null);
+    setIsAnalyzing(false);
+    setAnalysisError(null);
   }, []);
 
   const runJobCompare = useCallback(async (jobDescription) => {
     if (!jobDescription || !jobDescription.trim()) return;
     setIsComparing(true);
-    
+
     try {
-      // Attempt Gemini API live comparison first
+      // Attempt live AI comparison first
       const res = await fetch("/api/compare", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -163,16 +164,16 @@ export function ResumeContextProvider({ children }) {
         return;
       }
     } catch (err) {
-      console.log("Gemini compare offline, falling back to simulated analysis", err);
+      console.warn("Live compare offline, falling back to simulated analysis:", err.message);
     }
 
-    // Fallback simulated keyword matching if Gemini API is unconfigured/offline
+    // Fallback simulated keyword matching if API is unconfigured/offline
     setTimeout(() => {
       const text = jobDescription.toLowerCase();
       const possibleKeywords = ["docker", "redis", "aws", "kubernetes", "react", "git", "javascript", "typescript", "node.js", "graphql", "python", "sql"];
       const matched = [];
       const missing = [];
-      
+
       possibleKeywords.forEach(kw => {
         if (text.includes(kw)) {
           if (SAMPLE_REPORT.skills.some(s => s.toLowerCase() === kw)) {
@@ -212,11 +213,14 @@ export function ResumeContextProvider({ children }) {
     report,
     jobMatch,
     isComparing,
-    isGeminiAnalyzing,
-    geminiError,
+    isAnalyzing,
+    analysisError,
+    // Legacy aliases preserved for backward compatibility
+    isGeminiAnalyzing: isAnalyzing,
+    geminiError: analysisError,
     startUpload,
     resetToUpload,
-    runJobCompare
+    runJobCompare,
   };
 
   return (
