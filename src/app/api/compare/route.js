@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import OpenAI from "openai";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
@@ -8,12 +8,12 @@ export async function POST(req) {
       return NextResponse.json({ error: "No job description provided" }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.CHATGPT_API_KEY || process.env.OPENAI_API_KEY;
     if (!apiKey) {
-      return NextResponse.json({ error: "API key is not configured." }, { status: 503 });
+      return NextResponse.json({ error: "ChatGPT API key is not configured." }, { status: 503 });
     }
 
-    const ai = new GoogleGenAI({ apiKey });
+    const openai = new OpenAI({ apiKey });
 
     const prompt = `You are an experienced technical recruiter.
 Compare this candidate's resume against the target job description. Evaluate how well their skills and background match what the employer is looking for in a conversational, human tone.
@@ -31,17 +31,18 @@ Return ONLY valid JSON matching this exact structure:
   "matched": array of strings (top 4-8 key skills or qualifications present in both)
 }`;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        temperature: 0.2,
-        maxOutputTokens: 2048,
-      },
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: "You are an experienced technical recruiter that always responds with valid JSON." },
+        { role: "user", content: prompt }
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0.2,
+      max_tokens: 2048,
     });
 
-    const matchData = JSON.parse(response.text);
+    const matchData = JSON.parse(response.choices[0].message.content);
     return NextResponse.json(matchData, { status: 200 });
   } catch (error) {
     console.error("Job comparison failed:", error);

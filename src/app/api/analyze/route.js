@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import OpenAI from "openai";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
@@ -8,12 +8,12 @@ export async function POST(req) {
       return NextResponse.json({ error: "No resume text provided." }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.CHATGPT_API_KEY || process.env.OPENAI_API_KEY;
     if (!apiKey) {
-      return NextResponse.json({ error: "API key is not configured." }, { status: 503 });
+      return NextResponse.json({ error: "ChatGPT API key is not configured." }, { status: 503 });
     }
 
-    const ai = new GoogleGenAI({ apiKey });
+    const openai = new OpenAI({ apiKey });
 
     // We ask the model to review the resume like a friendly, experienced tech recruiter.
     const prompt = `You are an experienced, supportive technical recruiter and career mentor.
@@ -56,17 +56,18 @@ Return ONLY valid JSON matching this exact structure:
   }
 }`;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        temperature: 0.2,
-        maxOutputTokens: 4096,
-      },
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: "You are an experienced technical recruiter and career mentor that always responds with valid JSON." },
+        { role: "user", content: prompt }
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0.2,
+      max_tokens: 4096,
     });
 
-    const reportData = JSON.parse(response.text);
+    const reportData = JSON.parse(response.choices[0].message.content);
     return NextResponse.json(reportData, { status: 200 });
   } catch (error) {
     console.error("Resume analysis failed:", error);
