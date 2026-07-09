@@ -57,7 +57,7 @@ Return ONLY valid JSON matching this exact structure:
 }`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.0-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -70,6 +70,9 @@ Return ONLY valid JSON matching this exact structure:
     return NextResponse.json(reportData, { status: 200 });
   } catch (error) {
     console.error("Resume analysis failed:", error);
-    return NextResponse.json({ error: "Failed to analyze resume." }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || "Failed to analyze resume." },
+      { status: 500 }
+    );
   }
 }
