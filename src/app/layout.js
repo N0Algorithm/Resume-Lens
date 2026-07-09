@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="h-full antialiased light">
+    <html lang="en" className="h-full antialiased light" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -23,7 +23,10 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body className="h-screen max-h-screen overflow-hidden flex flex-col bg-[#f7f9ff] dark:bg-[#0d1117] text-[#181c21] dark:text-[#ededed] font-sans selection:bg-[#0051ae]/10 selection:text-[#0051ae] dark:selection:bg-[#0969da]/20 dark:selection:text-[#adc6ff]">
+      <body
+        suppressHydrationWarning
+        className="h-screen max-h-screen overflow-hidden flex flex-col bg-[#f7f9ff] dark:bg-[#0d1117] text-[#181c21] dark:text-[#ededed] font-sans selection:bg-[#0051ae]/10 selection:text-[#0051ae] dark:selection:bg-[#0969da]/20 dark:selection:text-[#adc6ff]"
+      >
         <ResumeContextProvider>
           <div className="flex flex-col h-full w-full overflow-hidden">
             <Header />
