@@ -4,7 +4,7 @@ import React from "react";
 import { useResume } from "../../hooks/useResume";
 
 export default function Header() {
-  const { resetToUpload, theme, toggleTheme } = useResume();
+  const { resetToUpload } = useResume();
 
   return (
     <header className="bg-white dark:bg-[#161b22] border-b border-[#c2c6d6] dark:border-[#30363d] sticky top-0 z-50 w-full transition-colors duration-200">
@@ -23,15 +23,15 @@ export default function Header() {
         <div className="flex items-center gap-6">
           <nav className="hidden sm:flex items-center gap-6 text-[14px] font-medium text-[#424753] dark:text-[#c4c7c9]">
             <a
-              href="https://github.com"
+              href="https://github.com/N0Algorithm"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-[#0051ae] dark:hover:text-[#adc6ff] transition-colors"
             >
-              Documentation
+              Profile
             </a>
             <a
-              href="https://github.com"
+              href="https://github.com/N0Algorithm/Resume-Lens"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-[#0051ae] dark:hover:text-[#adc6ff] transition-colors"
@@ -39,17 +39,6 @@ export default function Header() {
               GitHub
             </a>
           </nav>
-
-          {/* Theme Toggle */}
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded hover:bg-[#f1f4fa] dark:hover:bg-[#21262d] text-[#424753] dark:text-[#c4c7c9] hover:text-[#0051ae] dark:hover:text-[#adc6ff] transition-colors flex items-center justify-center focus:outline-none"
-            title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
-          >
-            <span className="material-symbols-outlined text-[20px]">
-              {theme === "light" ? "dark_mode" : "light_mode"}
-            </span>
-          </button>
         </div>
       </div>
     </header>

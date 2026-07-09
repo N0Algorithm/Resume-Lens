@@ -15,13 +15,14 @@ export default function PdfViewer() {
   const { file, fileName, resetToUpload, setResumeText } = useResume();
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
-  const [scale, setScale] = useState(1.0);
+  const [scale, setScale] = useState(0.85);
   const [hasError, setHasError] = useState(false);
 
   // Reset page when file changes
   useEffect(() => {
     const timer = setTimeout(() => {
       setPageNumber(1);
+      setScale(0.85);
       setHasError(false);
     }, 0);
     return () => clearTimeout(timer);
@@ -53,9 +54,9 @@ export default function PdfViewer() {
     setHasError(true);
   }
 
-  const zoomIn = () => setScale((prev) => Math.min(prev + 0.2, 2.0));
-  const zoomOut = () => setScale((prev) => Math.max(prev - 0.2, 0.6));
-  const resetZoom = () => setScale(1.0);
+  const zoomIn = () => setScale((prev) => Math.min(prev + 0.15, 1.8));
+  const zoomOut = () => setScale((prev) => Math.max(prev - 0.15, 0.5));
+  const resetZoom = () => setScale(0.85);
 
   return (
     <div className="flex flex-col h-full w-full overflow-hidden">
@@ -75,21 +76,21 @@ export default function PdfViewer() {
           <div className="flex items-center bg-[#f1f4fa] dark:bg-[#21262d] rounded-[4px] p-0.5 border border-[#e0e2e9] dark:border-[#30363d]">
             <button
               onClick={zoomOut}
-              className="p-1 hover:bg-[#e0e2e9] dark:hover:bg-[#30363d] rounded-[3px] text-[#424753] dark:text-[#c4c7c9] transition-colors flex items-center justify-center focus:outline-none"
+              className="p-1 hover:bg-[#e0e2e9] dark:hover:bg-[#30363d] rounded-[3px] text-[#424753] dark:text-[#c4c7c9] transition-colors flex items-center justify-center focus:outline-none cursor-pointer"
               title="Zoom Out"
             >
               <span className="material-symbols-outlined text-[16px]">remove</span>
             </button>
             <button
               onClick={resetZoom}
-              className="text-[12px] font-mono px-2 text-[#424753] dark:text-[#c4c7c9] hover:text-[#0051ae] dark:hover:text-[#adc6ff] transition-colors focus:outline-none"
-              title="Reset Zoom"
+              className="text-[12px] font-mono px-2 text-[#424753] dark:text-[#c4c7c9] hover:text-[#0051ae] dark:hover:text-[#adc6ff] transition-colors focus:outline-none cursor-pointer"
+              title="Reset Zoom to Fit"
             >
               {Math.round(scale * 100)}%
             </button>
             <button
               onClick={zoomIn}
-              className="p-1 hover:bg-[#e0e2e9] dark:hover:bg-[#30363d] rounded-[3px] text-[#424753] dark:text-[#c4c7c9] transition-colors flex items-center justify-center focus:outline-none"
+              className="p-1 hover:bg-[#e0e2e9] dark:hover:bg-[#30363d] rounded-[3px] text-[#424753] dark:text-[#c4c7c9] transition-colors flex items-center justify-center focus:outline-none cursor-pointer"
               title="Zoom In"
             >
               <span className="material-symbols-outlined text-[16px]">add</span>
@@ -101,7 +102,7 @@ export default function PdfViewer() {
           {/* Replace Button -> returns to upload */}
           <button
             onClick={resetToUpload}
-            className="btn-secondary px-3 py-1.5 text-[12px] font-medium rounded-[4px] transition-colors focus:outline-none"
+            className="btn-secondary px-3 py-1.5 text-[12px] font-medium rounded-[4px] transition-colors focus:outline-none cursor-pointer"
           >
             Replace
           </button>
@@ -109,9 +110,9 @@ export default function PdfViewer() {
       </div>
 
       {/* PDF Viewer Canvas Area */}
-      <div className="flex-1 overflow-auto relative flex flex-col items-center p-6 bg-[#ebeef5] dark:bg-[#0d1117] custom-scrollbar">
+      <div className="flex-1 overflow-auto relative p-6 bg-[#ebeef5] dark:bg-[#0d1117] custom-scrollbar flex flex-col items-center justify-start">
         {!hasError ? (
-          <div className="w-full flex flex-col items-center justify-center min-h-full">
+          <div className="w-full flex flex-col items-center justify-start my-auto pb-6">
             <Document
               file={file || "/sample-resume.pdf"}
               onLoadSuccess={onDocumentLoadSuccess}
@@ -134,7 +135,7 @@ export default function PdfViewer() {
                 scale={scale}
                 renderTextLayer={true}
                 renderAnnotationLayer={true}
-                className="shadow-md bg-white rounded-[2px]"
+                className="shadow-md bg-white rounded-[4px] border border-[#d0d7de] dark:border-[#30363d]"
               />
             </Document>
 
@@ -144,7 +145,7 @@ export default function PdfViewer() {
                 <button
                   disabled={pageNumber <= 1}
                   onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
-                  className="disabled:opacity-40 hover:text-[#0051ae] dark:hover:text-[#adc6ff] transition-colors font-medium focus:outline-none"
+                  className="disabled:opacity-40 hover:text-[#0051ae] dark:hover:text-[#adc6ff] transition-colors font-medium focus:outline-none cursor-pointer"
                 >
                   Prev
                 </button>
@@ -154,7 +155,7 @@ export default function PdfViewer() {
                 <button
                   disabled={pageNumber >= numPages}
                   onClick={() => setPageNumber((prev) => Math.min(prev + 1, numPages))}
-                  className="disabled:opacity-40 hover:text-[#0051ae] dark:hover:text-[#adc6ff] transition-colors font-medium focus:outline-none"
+                  className="disabled:opacity-40 hover:text-[#0051ae] dark:hover:text-[#adc6ff] transition-colors font-medium focus:outline-none cursor-pointer"
                 >
                   Next
                 </button>

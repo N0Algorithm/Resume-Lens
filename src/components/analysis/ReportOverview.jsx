@@ -52,24 +52,6 @@ export default function ReportOverview() {
             Comprehensive feedback and keyword alignment
           </p>
         </div>
-        <div className="flex items-center gap-2 font-mono text-[12px] bg-[#f1f4fa] dark:bg-[#21262d] px-3 py-1.5 rounded-[4px] border border-[#e0e2e9] dark:border-[#30363d] text-[#424753] dark:text-[#c4c7c9]">
-          {report?.isLiveGemini ? (
-            <>
-              <span className="w-2 h-2 rounded-full bg-[#1f883d]" />
-              <span className="text-[#1f883d] font-semibold">AI Review Active</span>
-            </>
-          ) : report?.geminiError ? (
-            <>
-              <span className="w-2 h-2 rounded-full bg-[#ba1a1a]" />
-              <span className="text-[#ba1a1a] dark:text-[#ffdad6]" title={report.geminiError}>Offline Mode</span>
-            </>
-          ) : (
-            <>
-              <span className="w-2 h-2 rounded-full bg-[#1f883d]" />
-              <span>Status: Active</span>
-            </>
-          )}
-        </div>
       </div>
 
       {/* Overview Cards Grid */}

@@ -24,36 +24,6 @@ export function ResumeContextProvider({ children }) {
   const [isComparing, setIsComparing] = useState(false);
   const [isGeminiAnalyzing, setIsGeminiAnalyzing] = useState(false);
   const [geminiError, setGeminiError] = useState(null);
-  const [theme, setTheme] = useState("light");
-
-  // Initialize theme from localStorage or system preference
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const savedTheme = localStorage.getItem("resumelens_theme");
-      if (savedTheme === "dark" || (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-        setTheme("dark");
-        document.documentElement.classList.add("dark");
-      } else {
-        setTheme("light");
-        document.documentElement.classList.remove("dark");
-      }
-    }, 0);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const toggleTheme = useCallback(() => {
-    setTheme((prev) => {
-      const next = prev === "light" ? "dark" : "light";
-      localStorage.setItem("resumelens_theme", next);
-      if (next === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-      return next;
-    });
-  }, []);
-
   // When resumeText is extracted in analysis view, trigger live Gemini AI analysis!
   useEffect(() => {
     if (!resumeText || view !== "analysis") return;
@@ -244,8 +214,6 @@ export function ResumeContextProvider({ children }) {
     isComparing,
     isGeminiAnalyzing,
     geminiError,
-    theme,
-    toggleTheme,
     startUpload,
     resetToUpload,
     runJobCompare
