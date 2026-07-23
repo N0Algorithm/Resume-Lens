@@ -16,6 +16,7 @@ export async function POST(req) {
     // We ask the model to review the resume like a friendly, experienced tech recruiter.
     const prompt = `You are an experienced, supportive technical recruiter and career mentor.
 Review the following resume text and provide practical, constructive feedback in a natural, conversational human tone. Avoid robotic phrasing, buzzwords, or overly formal jargon. Keep descriptions concise and clear.
+CRITICAL: Do NOT hallucinate. Ensure that any phrases or words you extract (like weakPhrases, strongVerbs, bulletRewrite) exist EXACTLY in the provided Resume Text. Do not invent details not present in the resume.
 
 Resume Text:
 ${resumeText.slice(0, 8000)}

@@ -12,7 +12,7 @@ export default function Header() {
         {/* Brand - clicking returns to upload workspace */}
         <button
           onClick={resetToUpload}
-          className="text-[20px] font-semibold text-[#0051ae] dark:text-[#adc6ff] hover:opacity-80 transition-all flex items-center gap-2 focus:outline-none"
+          className="cursor-pointer text-[20px] font-semibold text-[#0051ae] dark:text-[#adc6ff] hover:opacity-80 transition-all flex items-center gap-2 focus:outline-none"
           title="Return to Upload Workspace"
         >
           <span className="material-symbols-outlined fill text-[22px]">lens</span>

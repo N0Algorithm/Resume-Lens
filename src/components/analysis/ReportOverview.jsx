@@ -117,9 +117,9 @@ export default function ReportOverview() {
             { label: "Contact Info", score: report?.pillarScores?.contactInfo || 100, icon: "contact_mail" },
           ].map((pillar, i) => (
             <Card key={i} padding="p-3" className="flex flex-col gap-2">
-              <div className="flex items-center justify-between text-[12px] text-[#727785] dark:text-[#8b949e]">
-                <span className="truncate font-medium">{pillar.label}</span>
-                <span className="material-symbols-outlined text-[16px] text-[#0051ae] dark:text-[#adc6ff]">{pillar.icon}</span>
+              <div className="flex items-start justify-between text-[12px] text-[#727785] dark:text-[#8b949e] gap-1">
+                <span className="font-medium text-wrap leading-tight">{pillar.label}</span>
+                <span className="material-symbols-outlined text-[16px] text-[#0051ae] dark:text-[#adc6ff] shrink-0">{pillar.icon}</span>
               </div>
               <div className="flex items-baseline justify-between font-mono">
                 <span className="text-[18px] font-semibold text-[#181c21] dark:text-[#ededed]">{pillar.score}%</span>
