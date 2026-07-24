@@ -24,7 +24,7 @@ ${jobDescription.slice(0, 6000)}
 
 Return ONLY valid JSON matching this exact structure:
 {
-  "matchScore": integer between 0 and 100 representing overall requirement fit,
+  "matchScore": integer between 0 and 100 representing overall requirement fit (Calculate this strictly based on the comparison: reward matches and penalize missing items; do NOT default to common placeholder scores like 82 or 85.),
   "missing": array of strings (top 3-6 critical skills or qualifications required by the job that are missing from the resume),
   "matched": array of strings (top 4-8 key skills or qualifications present in both)
 }`;

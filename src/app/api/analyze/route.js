@@ -23,7 +23,7 @@ ${resumeText.slice(0, 8000)}
 
 Return ONLY valid JSON matching this exact structure:
 {
-  "overallScore": integer between 0 and 100,
+  "overallScore": integer between 0 and 100 (calculate as the exact average of the 4 pillar scores below),
   "candidateLevel": string (estimated experience level, e.g. "Senior Engineer (6+ years)" or "Mid-Level Developer"),
   "suggestedRoles": array of 3 strings (matching job titles for this background),
   "readability": string ("Strong", "Moderate", or "Needs Work"),
@@ -32,10 +32,10 @@ Return ONLY valid JSON matching this exact structure:
   "weakPhrases": array of strings (top 2-3 passive phrases found that could be stronger, e.g. ["Responsible for", "Worked on"]),
   "summary": string (a natural 2-sentence summary of the candidate's strengths and areas for improvement),
   "pillarScores": {
-    "impactMetrics": integer between 0 and 100 (use of numbers and measurable results),
-    "keywords": integer between 0 and 100 (relevant technical skills and tools),
-    "formatting": integer between 0 and 100 (layout structure and readability),
-    "contactInfo": integer between 0 and 100 (presence of email, phone, links)
+    "impactMetrics": integer between 0 and 100 (Strictly calculated: count the number of bullet points in the professional experience section, and compute the percentage of those bullets that contain a quantifiable metric/number. E.g., if only 3 out of 10 bullet points have numbers, this score must be exactly 30),
+    "keywords": integer between 0 and 100 (Strictly calculated: count the number of relevant industry skills/tools listed. 10+ skills = 90-100, 7-9 skills = 75-89, 4-6 skills = 50-74, 0-3 skills = 0-49),
+    "formatting": integer between 0 and 100 (Strictly calculated: start at 100, deduct 15 points for any weak/passive phrasing found, deduct 10 points for each grammatical issue/typo, deduct 20 points for wall of text or bad spacing),
+    "contactInfo": integer between 0 and 100 (Strictly calculated: 100 if email, phone, location/LinkedIn, and GitHub are all present; deduct 25 points for each missing component)
   },
   "skills": array of strings (top 8-12 technical skills found),
   "bulletRewrite": {
@@ -68,6 +68,18 @@ Return ONLY valid JSON matching this exact structure:
     });
 
     const reportData = JSON.parse(response.choices[0].message.content);
+    
+    // Programmatically calculate the overallScore to ensure mathematical accuracy and variation
+    if (reportData.pillarScores) {
+      const impactMetrics = Number(reportData.pillarScores.impactMetrics) || 0;
+      const keywords = Number(reportData.pillarScores.keywords) || 0;
+      const formatting = Number(reportData.pillarScores.formatting) || 0;
+      const contactInfo = Number(reportData.pillarScores.contactInfo) || 0;
+      
+      reportData.overallScore = Math.round((impactMetrics + keywords + formatting + contactInfo) / 4);
+    }
+
+    console.log("LLM response:", JSON.stringify(reportData, null, 2));
     return NextResponse.json(reportData, { status: 200 });
   } catch (error) {
     console.error("Resume analysis failed:", error);
