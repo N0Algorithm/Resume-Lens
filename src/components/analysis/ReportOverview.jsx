@@ -111,10 +111,10 @@ export default function ReportOverview() {
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: "Quantifiable Impact", score: report?.pillarScores?.impactMetrics || 82, icon: "trending_up" },
-            { label: "Keyword Match", score: report?.pillarScores?.keywords || 94, icon: "key" },
-            { label: "Formatting & Layout", score: report?.pillarScores?.formatting || 90, icon: "layers" },
-            { label: "Contact Info", score: report?.pillarScores?.contactInfo || 100, icon: "contact_mail" },
+            { label: "Quantifiable Impact", score: report?.pillarScores?.impactMetrics ?? 82, icon: "trending_up" },
+            { label: "Keyword Match", score: report?.pillarScores?.keywords ?? 94, icon: "key" },
+            { label: "Formatting & Layout", score: report?.pillarScores?.formatting ?? 90, icon: "layers" },
+            { label: "Contact Info", score: report?.pillarScores?.contactInfo ?? 100, icon: "contact_mail" },
           ].map((pillar, i) => (
             <Card key={i} padding="p-3" className="flex flex-col gap-2">
               <div className="flex items-start justify-between text-[12px] text-[#727785] dark:text-[#8b949e] gap-1">
