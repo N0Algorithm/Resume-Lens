@@ -1,10 +1,10 @@
 # Resume-Lens
 
-Resume-Lens is an AI-powered resume analysis tool built to give you the clinical, actionable feedback of a senior tech recruiter right inside your browser. Powered natively by ultra-fast **GroqCloud (`llama-3.3-70b-versatile`)**, it grades your resume on impact metrics, keywords, formatting, and overall readability. You can upload any PDF resume and instantly view tailored feedback side-by-side with your document.
+Resume-Lens is an AI-powered resume analysis tool built to give you the clinical, actionable feedback of a senior tech recruiter right inside your browser. Powered natively by ultra-fast **GroqCloud (`qwen/qwen3.6-27b`)**, it grades your resume on impact metrics, keywords, formatting, and overall readability. You can upload any PDF resume and instantly view tailored feedback side-by-side with your document.
 
 ## Features
 
-* **Lightning-Fast AI Feedback via Groq:** Get an exhaustive, multi-pillar breakdown of your resume powered natively by **Llama 3.3 70B** using the official `groq-sdk` (300+ tokens/sec).
+* **Lightning-Fast AI Feedback via Groq:** Get an exhaustive, multi-pillar breakdown of your resume powered natively by **Qwen 3.6 27B** using the official `groq-sdk` (500+ tokens/sec).
 * **Side-by-Side Studio View:** Read specific recruiter recommendations while inspecting the exact layout and structure of your PDF.
 * **ATS Compatibility Check:** Verify that Applicant Tracking Systems can easily parse your document headers, fonts, and layout.
 * **Job Description Matching:** Paste a target job description to dynamically check keyword overlap and identify critical missing skills.
@@ -14,7 +14,7 @@ Resume-Lens is an AI-powered resume analysis tool built to give you the clinical
 
 * **Framework:** [Next.js](https://nextjs.org/) 16 (App Router)
 * **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
-* **Flagship AI Engine & SDK:** [GroqCloud API](https://console.groq.com/) via official [`groq-sdk`](https://github.com/groq/groq-typescript) (`llama-3.3-70b-versatile`)
+* **Flagship AI Engine & SDK:** [GroqCloud API](https://console.groq.com/) via official [`groq-sdk`](https://github.com/groq/groq-typescript) (`qwen/qwen3.6-27b`)
 * **PDF Handling:** [react-pdf](https://projects.wojtekmaj.pl/react-pdf/)
 
 ## Project Structure
@@ -75,7 +75,7 @@ npm start
 ## Usage Workflow
 
 1. **Upload:** Drag and drop your PDF resume onto the clean drop zone.
-2. **Analyze:** Watch the multi-stage progress indicator as text is extracted and analyzed by **Groq (`llama-3.3-70b`)**.
+2. **Analyze:** Watch the multi-stage progress indicator as text is extracted and analyzed by **Groq (`qwen3.6-27b`)**.
 3. **Review & Iterate:** Explore your overall score, word choices, ATS health, and clinical bullet rewrites.
 4. **Compare:** Paste a target job description in the Job Match panel to see how well your background aligns.
 

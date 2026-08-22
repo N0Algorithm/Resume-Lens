@@ -31,7 +31,7 @@ Return ONLY valid JSON matching this exact structure:
 
     const groq = new Groq({ apiKey });
     const response = await groq.chat.completions.create({
-      model: "gpt-oss-120b",
+      model: "qwen/qwen3.6-27b",
       messages: [
         { role: "system", content: "You are an experienced technical recruiter that always responds with valid JSON." },
         { role: "user", content: prompt }
